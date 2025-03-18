@@ -27,6 +27,14 @@ export class UserService {
         return this.prisma.user.update({
             where: { id },
             data: updateUserDto,
+            select: {
+                id: true,
+                name: true,
+                password: false, //does not appear in response after changes
+                email: true,
+                createdAt: true,
+                updatedAt: true,
+            }
         });
     }
 
