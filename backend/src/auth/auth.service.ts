@@ -12,7 +12,7 @@ export class AuthService {
     ) {}
 
     async register(CreateUserDto: CreateUserDto) {
-        const { name, email, password } = CreateUserDto;
+        const { name, email, password, role } = CreateUserDto;
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -21,6 +21,7 @@ export class AuthService {
                 name,
                 email,
                 password: hashedPassword, // save hashing password
+                role: role || 'USER',
             },
         });
 
