@@ -29,4 +29,17 @@ export class UserService {
             data: updateUserDto,
         });
     }
+
+    async remove(id: number) {
+        const user = this.prisma.user.findUnique({
+            where: { id },
+        });
+        if(!user) {
+            throw new NotFoundException(`User with ID ${id} not found`);
+        }
+
+        return this.prisma.user.delete({
+            where: { id },
+        });
+    }
 }
