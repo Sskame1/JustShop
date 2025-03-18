@@ -9,7 +9,7 @@ export class AuthService {
     constructor(
         private prisma: PrismaService,
         private JwtService: JwtService,
-    ) {}
+    ) { }
 
     async register(CreateUserDto: CreateUserDto) {
         const { name, email, password, role } = CreateUserDto;
@@ -35,7 +35,7 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new  UnauthorizedException('Invalid email or password');
+            throw new UnauthorizedException('Invalid email or password');
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
