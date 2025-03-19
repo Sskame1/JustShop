@@ -30,7 +30,6 @@ export class UserService {
             select: {
                 id: true,
                 name: true,
-                password: false, //does not appear in response after changes
                 email: true,
                 createdAt: true,
                 updatedAt: true,

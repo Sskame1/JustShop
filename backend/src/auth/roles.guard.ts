@@ -3,7 +3,6 @@ import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@
   import { JwtService } from '@nestjs/jwt';
   import { Request } from 'express';
   import { PrismaService } from '../prisma/prisma.service';
-import { Observable } from 'rxjs';
 
   @Injectable()
   export class RolesGuard implements CanActivate {
