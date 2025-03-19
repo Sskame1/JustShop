@@ -1,9 +1,11 @@
-import { Body, Controller, Post, UseGuards, Get, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards, Get, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'multer'
 
 @Controller('product')
 export class ProductController {
@@ -11,9 +13,16 @@ export class ProductController {
 
   @Post()
   @Roles('ADMIN', 'SELLER')
+  @UseInterceptors(FileInterceptor('image'))
   @UseGuards(RolesGuard)
-  async create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  async create(
+    @UploadedFile() image: Express.Multer.File,
+    @Body() createProductDto: CreateProductDto,
+  ) {
+    return this.productService.create({
+      ...createProductDto,
+      image: image.buffer,
+    });
   }
 
   @Get()
@@ -29,11 +38,16 @@ export class ProductController {
   @Patch(':id')
   @Roles('ADMIN', 'SELLER')
   @UseGuards(RolesGuard)
+  @UseInterceptors(FileInterceptor('image'))
   async update(
     @Param('id', ParseIntPipe) id: number,
+    @UploadedFile() image: Express.Multer.File,
     @Body() updateProducDto: UpdateProductDto,
   ) {
-    return this.productService.update(id, updateProducDto);
+    return this.productService.update(id, {
+      ...updateProducDto,
+      image: image?.buffer,
+    });
   }
 
   @Delete(':id')
