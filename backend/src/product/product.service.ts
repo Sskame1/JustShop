@@ -9,7 +9,10 @@ export class ProductService {
 
     async create(createProductDto: CreateProductDto) {
         return this.prisma.product.create({
-            data: createProductDto,
+            data: {
+                ...createProductDto,
+                image: createProductDto.image,
+            },
         });
     }
 
@@ -39,7 +42,10 @@ export class ProductService {
 
         return this.prisma.product.update({
             where: { id },
-            data: updateProductDto,
+            data: {
+                ...updateProductDto,
+                image: updateProductDto.image,
+            },
         });
     }
 
