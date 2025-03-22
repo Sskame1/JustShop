@@ -1,5 +1,6 @@
 import { IsString, IsNumber, IsNotEmpty } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { BadRequestException } from '@nestjs/common';
 
 export class CreateProductDto {
     @IsString()
@@ -15,7 +16,12 @@ export class CreateProductDto {
 
     @IsNumber()
     @IsNotEmpty()
-    @Transform(({ value }) => parseFloat(value))
+    @Transform(({ value }) => {
+        const parsed = parseFloat(value);
+        if (isNaN(parsed)) {
+            throw new BadRequestException('Incorrect format of the number by "price"')
+        }
+    })
     price: number;
 
     @IsNumber()

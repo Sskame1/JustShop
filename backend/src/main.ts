@@ -12,13 +12,11 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
-  app.enableCors({
-    origin: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-    credentials: true,
-  });
-
-  app.useGlobalPipes(new ValidationPipe()) //for global validation
+  app.useGlobalPipes( //for global validation
+    new ValidationPipe({
+      transform: true,
+    })
+  );
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
