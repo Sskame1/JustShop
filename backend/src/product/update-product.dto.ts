@@ -1,4 +1,5 @@
 import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class UpdateProductDto {
     @IsString()
@@ -14,9 +15,11 @@ export class UpdateProductDto {
 
     @IsNumber()
     @IsOptional()
+    @Transform(({ value }) => parseFloat(value))
     price?: number;
 
     @IsNumber()
     @IsOptional()
+    @Transform(({ value }) => parseInt(value, 10))
     sellerId?: number;
 }
