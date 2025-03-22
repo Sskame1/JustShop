@@ -10,7 +10,7 @@ export class UpdateProductDto {
     description?: string;
 
     @IsOptional()
-    image?: Buffer;
+    image?: string;
 
     @IsNumber()
     @IsOptional()

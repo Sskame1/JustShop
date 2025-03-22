@@ -10,7 +10,7 @@ export class CreateProductDto {
     description: string;
 
     @IsNotEmpty()
-    image: Buffer;
+    image: string;
 
     @IsNumber()
     @IsNotEmpty()
