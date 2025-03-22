@@ -9,7 +9,7 @@ export class CreateProductDto {
     @IsNotEmpty()
     description: string;
 
-    @IsNotEmpty()
+    @IsString()
     image: string;
 
     @IsNumber()

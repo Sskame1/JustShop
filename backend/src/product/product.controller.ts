@@ -16,15 +16,7 @@ export class ProductController {
   @UseInterceptors(FileInterceptor('image', multerConfig))
   @UseGuards(RolesGuard)
   async create(
-    @UploadedFile(
-      new ParseFilePipe({
-        validators: [
-          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)'}),
-          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }) // limit on 5mb
-        ]
-      }),
-    )
-    image: Express.Multer.File,
+    @UploadedFile() image: Express.Multer.File,
     @Body() createProductDto: CreateProductDto,
   ) {
     const createDto = {
@@ -56,7 +48,7 @@ export class ProductController {
   ) {
     return this.productService.update(id, {
       ...updateProducDto,
-      image: image?.buffer,
+      image: `/uploads/${image.filename}`,
     });
   }
 

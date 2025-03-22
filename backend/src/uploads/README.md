@@ -1,1 +1,0 @@
-folder for image and other
