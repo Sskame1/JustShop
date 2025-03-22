@@ -11,16 +11,16 @@ export class CreateProductDto {
     @IsNotEmpty()
     description: string;
 
-    @IsString()
-    image: string;
+    image?: string; 
 
     @IsNumber()
     @IsNotEmpty()
     @Transform(({ value }) => {
         const parsed = parseFloat(value);
         if (isNaN(parsed)) {
-            throw new BadRequestException('Incorrect format of the number by "price"')
+            throw new BadRequestException('Incorrect format of the number by price')
         }
+        return parsed;
     })
     price: number;
 

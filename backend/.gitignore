@@ -103,3 +103,8 @@ junit.xml
 package.copy.json
 
 *.tgz
+
+
+# custom
+
+/uploads/*
