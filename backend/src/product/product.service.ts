@@ -11,7 +11,6 @@ export class ProductService {
         return this.prisma.product.create({
             data: {
                 ...createProductDto,
-                image: createProductDto.image,
             },
         });
     }
@@ -44,7 +43,6 @@ export class ProductService {
             where: { id },
             data: {
                 ...updateProductDto,
-                image: updateProductDto.image,
             },
         });
     }
