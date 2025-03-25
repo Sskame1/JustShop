@@ -4,10 +4,17 @@ import { PrismaService } from './prisma/prisma.service';
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { CartModule } from './cart/cart.module';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [AuthModule, UserModule, ProductModule, CartModule],
+  imports: [
+    AuthModule,
+    PassportModule.register({ session: false }),
+    UserModule,
+    ProductModule,
+    CartModule
+  ],
   controllers: [],
   providers: [PrismaService],
 })
-export class AppModule {}
+export class AppModule { }
