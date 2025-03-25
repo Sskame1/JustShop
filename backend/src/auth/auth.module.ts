@@ -18,5 +18,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
   ],
   controllers: [AuthController],
   providers: [AuthService, PrismaService],
+  exports: [JwtModule]
 })
 export class AuthModule {}
