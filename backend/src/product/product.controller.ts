@@ -6,13 +6,14 @@ import { CreateProductDto } from './create-product.dto';
 import { UpdateProductDto } from './update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/config/multer.config';
+import { UserRole } from 'src/auth/roles.enum';
 
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) { }
 
   @Post()
-  @Roles('ADMIN', 'SELLER')
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseInterceptors(FileInterceptor('image', multerConfig))
   @UseGuards(RolesGuard)
   async create(
@@ -38,7 +39,7 @@ export class ProductController {
   }
 
   @Patch(':id')
-  @Roles('ADMIN', 'SELLER')
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('image'))
   async update(
@@ -53,7 +54,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  @Roles('ADMIN', 'SELLER')
+  @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseGuards(RolesGuard)
   async remove(@Param('id', ParseIntPipe) id: number) {
     return this.productService.remove(id);

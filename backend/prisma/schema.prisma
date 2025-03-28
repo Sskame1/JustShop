@@ -12,7 +12,7 @@ model User {
   name      String
   email     String    @unique
   password  String
-  role      String    @default("USER")
+  role      Int    @default(1) // 1 - user, 2 - admin, 3 - seller
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

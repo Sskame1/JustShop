@@ -1,26 +1,27 @@
 import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@nestjs/common';
-  import { Reflector } from '@nestjs/core';
-  import { JwtService } from '@nestjs/jwt';
-  import { Request } from 'express';
-  import { PrismaService } from '../../prisma/prisma.service';
+import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
+import { Request } from 'express';
+import { PrismaService } from '../../prisma/prisma.service';
+import { UserRole } from '../roles.enum';
 
-  @Injectable()
-  export class RolesGuard implements CanActivate {
-    constructor (
+@Injectable()
+export class RolesGuard implements CanActivate {
+    constructor(
         private reflector: Reflector,
         private jwtService: JwtService,
         private prisma: PrismaService,
-    ) {}
+    ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        const roles = this.reflector.get<string[]>('roles', context.getHandler());
-        if(!roles){
-            return true; 
+        const roles = this.reflector.get<number[]>('roles', context.getHandler());
+        if (!roles) {
+            return true;
         }
 
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
-        if(!token) {
+        if (!token) {
             throw new ForbiddenException('Access denied')
         }
 
@@ -44,4 +45,4 @@ import { CanActivate, ExecutionContext, Injectable, ForbiddenException } from '@
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
     }
-  }
+}
