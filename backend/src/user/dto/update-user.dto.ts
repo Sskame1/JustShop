@@ -1,24 +1,24 @@
-import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString, Max, MaxLength, Min, MinLength } from "class-validator"
-import { UserRole } from "../roles.enum";
+import { IsEmail, IsString, MaxLength, MinLength, IsOptional, IsInt, Min, Max } from "class-validator";
+import { UserRole } from "src/auth/roles.enum";
 
-export class CreateUserDto {
+export class UpdateUserDto {
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @MaxLength(20)
     name: string;
 
     @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     email: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @MinLength(6)
     @MaxLength(20)
     password: string;
 
-    @IsInt()
     @IsOptional()
+    @IsInt()
     @Min(UserRole.USER)
     @Max(UserRole.SELLER)
     role?: number;
