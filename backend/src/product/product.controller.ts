@@ -2,11 +2,12 @@ import { Body, Controller, Post, UseGuards, Get, Param, ParseIntPipe, Patch, Del
 import { ProductService } from './product.service';
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { CreateProductDto } from './create-product.dto';
-import { UpdateProductDto } from './update-product.dto';
+import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerConfig } from 'src/config/multer.config';
 import { UserRole } from 'src/auth/roles.enum';
+import { User } from 'src/auth/decorators/user.decorator';
 
 @Controller('product')
 export class ProductController {
@@ -14,18 +15,25 @@ export class ProductController {
 
   @Post()
   @Roles(UserRole.ADMIN, UserRole.SELLER)
-  @UseInterceptors(FileInterceptor('image', multerConfig))
   @UseGuards(RolesGuard)
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   async create(
-    @UploadedFile() image: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 5 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ]
+      })
+    ) image: Express.Multer.File,
     @Body() createProductDto: CreateProductDto,
+    @User() user: { id: number }
   ) {
-    const createDto = {
+    return this.productService.create({
       ...createProductDto,
-      image: `./uploads/${image.filename}`
-    }
-
-    return this.productService.create(createDto);
+      image: `./uploads/${image.filename}`,
+      sellerId: user.id
+    });
   }
 
   @Get()
@@ -41,22 +49,26 @@ export class ProductController {
   @Patch(':id')
   @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseGuards(RolesGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(FileInterceptor('image', multerConfig))
   async update(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() image: Express.Multer.File,
     @Body() updateProducDto: UpdateProductDto,
+    @User() user: { id: number }
   ) {
     return this.productService.update(id, {
       ...updateProducDto,
       image: `/uploads/${image.filename}`,
-    });
+    }, user.id);
   }
 
   @Delete(':id')
   @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseGuards(RolesGuard)
-  async remove(@Param('id', ParseIntPipe) id: number) {
-    return this.productService.remove(id);
+  async remove(
+    @Param('id', ParseIntPipe) id: number
+    @User() user: { id: number }
+  ) {
+    return this.productService.remove(id, user.id);
   }
 }
