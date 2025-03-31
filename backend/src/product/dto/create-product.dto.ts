@@ -11,7 +11,7 @@ export class CreateProductDto {
     @IsNotEmpty()
     description: string;
 
-    image?: string; 
+    image: string; 
 
     @IsNumber()
     @IsNotEmpty()
