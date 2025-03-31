@@ -66,7 +66,7 @@ export class ProductController {
   @Roles(UserRole.ADMIN, UserRole.SELLER)
   @UseGuards(RolesGuard)
   async remove(
-    @Param('id', ParseIntPipe) id: number
+    @Param('id', ParseIntPipe) id: number,
     @User() user: { id: number }
   ) {
     return this.productService.remove(id, user.id);
