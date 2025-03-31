@@ -12,25 +12,27 @@ model User {
   name      String
   email     String    @unique
   password  String
-  role      Int    @default(1) // 1 - user, 2 - admin, 3 - seller
+  role      Int       @default(1) // 1 - user, 2 - admin, 3 - seller
   products  Product[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   Cart      Cart?
+  Order     Order[]
 }
 
 model Product {
-  id          Int        @id @default(autoincrement())
+  id          Int         @id @default(autoincrement())
   name        String
   description String
   image       String
   price       Int
-  count       Int        @default(0)
+  count       Int         @default(0)
   sellerId    Int
-  seller      User       @relation(fields: [sellerId], references: [id])
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  seller      User        @relation(fields: [sellerId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
   CartItem    CartItem[]
+  OrderItem   OrderItem[]
 }
 
 model Cart {
@@ -51,4 +53,33 @@ model CartItem {
   quantity  Int     @default(1)
 
   @@unique([cartId, productId])
+}
+
+model Order {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+  total     Decimal     @default(0.0)
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+  price     Decimal
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
 }
