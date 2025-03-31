@@ -1,6 +1,7 @@
-import { IsOptional } from "class-validator";
+import { IsInt, IsPositive } from "class-validator";
 
 export class CreateOrderDto {
-    @IsOptional()
-    comment?: string;
+    @IsInt()
+    @IsPositive()
+    userId: number;
 }
